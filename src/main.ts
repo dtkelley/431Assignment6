@@ -117,6 +117,10 @@ export module Assignment6 {
       new Binding("false", new BoolV(false))
    ];
 
+   export var extendEnv = function(env : Environment, bindings : Binding[]) {
+      return env.concat(bindings, env);
+   };
+
    export var serialize = function (val: Value): string {
       if (val instanceof NumV) {
          return String(val.num);
@@ -136,5 +140,70 @@ export module Assignment6 {
       else {
          throw new Error('Unrecognized value');
       }
-   }
+   };
+
+   export var myAdd = function(val1 : Value, val2 : Value) : Value {
+      if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
+         throw new Error("ZHRL: Invalid operands for '+'");
+      }
+
+      return new NumV(val1.num + val2.num);
+   };
+
+   export var mySubtract = function(val1 : Value, val2 : Value) : Value {
+      if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
+         throw new Error("ZHRL: Invalid operands for '-'");
+      }
+
+      return new NumV(val1.num - val2.num);
+   };
+
+   export var myMult = function(val1 : Value, val2 : Value) : Value {
+      if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
+         throw new Error("ZHRL: Invalid operands for '*'");
+      }
+
+      return new NumV(val1.num * val2.num);
+   };
+
+   export var myDivide = function(val1 : Value, val2 : Value) : Value {
+      if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
+         throw new Error("ZHRL: Invalid operands for '/'");
+      }
+
+      if (val2.num === 0) {
+         throw new Error("ZHRL: Division by zero is undefined");
+      }
+
+      return new NumV(val1.num / val2.num);
+   };
+
+   export var myLessEqual = function(val1 : Value, val2 : Value) : Value {
+      if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
+         throw new Error("ZHRL: Invalid operands for '<='");
+      }
+
+      return new BoolV(val1.num <= val2.num);
+   };
+
+   export var myEqual = function(val1 : Value, val2 : Value) : Value {
+      if (val1 instanceof NumV && val2 instanceof NumV) {
+         return new BoolV(val1.num === val2.num);
+      }
+      else if (val1 instanceof StrV && val2 instanceof StrV) {
+         return new BoolV(val1.str === val2.str);
+      }
+      else if (val1 instanceof BoolV && val2 instanceof BoolV) {
+         return new BoolV(val1.val === val2.val);
+      }
+      return new BoolV(false);
+   };
+
+   export var isReserved = function(str : String) : boolean {
+      return str === "var" || str === "if" || str === "lam" || str === "=";
+   };
+
+   // export var interp = function(exp : ExprC, env : Environment) : Value {
+   //    if (exp instance)
+   // }
 }
