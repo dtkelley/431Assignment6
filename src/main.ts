@@ -117,9 +117,18 @@ export module Assignment6 {
       new Binding("false", new BoolV(false))
    ];
 
-   export var extendEnv = function(env : Environment, bindings : Binding[]) {
+   export var extendEnv = function(env : Environment, bindings : Binding[]) : Binding[] {
       return env.concat(bindings, env);
    };
+
+   export var envLookup = function(env : Environment, id : string) : Value {
+      for (let i = 0; i < env.length; i++) {
+         if (env[i].id === id) {
+            return env[i].val;
+         }
+      }
+      throw new Error("ZHRL: Binding not found");
+   }
 
    export var serialize = function (val: Value): string {
       if (val instanceof NumV) {
@@ -203,7 +212,79 @@ export module Assignment6 {
       return str === "var" || str === "if" || str === "lam" || str === "=";
    };
 
-   // export var interp = function(exp : ExprC, env : Environment) : Value {
-   //    if (exp instance)
-   // }
+   export var interp = function(exp : ExprC, env : Environment) : Value {
+      if (exp instanceof IdC) {
+         return envLookup(env, exp.id);
+      }
+      else if (exp instanceof NumC) {
+         return new NumV(exp.num);
+      }
+      else if (exp instanceof StrC) {
+         return new StrV(exp.str);
+      }
+      else if (exp instanceof IfC) {
+         let test = interp(exp.test, env);
+
+         if (!(test instanceof BoolV)) {
+            throw new Error("ZHRL: cannot resolve to boolean");
+         }
+
+         if (test) {
+            return interp(exp.trueClause, env);
+         }
+         else {
+            return interp(exp.falseClause, env);
+         }
+      }
+      else if (exp instanceof LamC) {
+         return new CloV(exp.args, exp.body, env);
+      }
+      else if (exp instanceof AppC) {
+         let func = interp(exp.func, env);
+
+         if (func instanceof PrimV) {
+            if (exp.params.length === 2) {
+               let val1 = interp(exp.params[0], env);
+               let val2 = interp(exp.params[2], env);
+               switch (func.operator) {
+                  case '+':
+                     return myAdd(val1, val2);
+                  case '-':
+                     return mySubtract(val1, val2);
+                  case '*':
+                     return myMult(val1, val2);
+                  case '/':
+                     return myDivide(val1, val2);
+                  case '<=':
+                     return myLessEqual(val1, val2);
+                  case 'equal?':
+                     return myEqual(val1, val2);
+                  default:
+                     throw new Error("ZHRL: Unrecognized primitive operator");
+               }
+            }
+            else {
+               throw new Error("ZHRL: invalid number of operands for primitive operation");
+            }
+         }
+         else if (func instanceof CloV) {
+            let newBindings = [];
+            let newEnv;
+
+            for (let i = 0; i < exp.params.length; i++) {
+               newBindings.push(new Binding(func.params[i], interp(exp.params[i], env)));
+            }
+
+            newEnv = extendEnv(func.env, newBindings);
+
+            interp(func.body, newEnv);
+         }
+         else {
+            throw new Error("ZHRL: Invalid function application");
+         }
+      }
+      else {
+         throw new Error("ZHRL: Unimplemented expression type");
+      }
+   }
 }
