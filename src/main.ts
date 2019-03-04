@@ -245,7 +245,7 @@ export module Assignment6 {
          if (func instanceof PrimV) {
             if (exp.params.length === 2) {
                let val1 = interp(exp.params[0], env);
-               let val2 = interp(exp.params[2], env);
+               let val2 = interp(exp.params[1], env);
                switch (func.operator) {
                   case '+':
                      return myAdd(val1, val2);
