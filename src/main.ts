@@ -288,6 +288,10 @@ export module Assignment6 {
       }
    }
 
+   export var hasWhitespace = function(s) {
+      return /\s/g.test(s);
+   }
+
    export var parse = function(input : any) : ExprC {
       if (input.length === 1) {
          let firstInput = input[0]
@@ -295,19 +299,34 @@ export module Assignment6 {
          if (!isNaN(num)) {
             return new NumC(num);
          }
-         else if (firstInput.charAt(0) === '"' && firstInput.charAt(firstInput.length - 1) === '"') {
+         else if (firstInput.charAt(0) === '"'
+          && firstInput.charAt(firstInput.length - 1) === '"') {
             return new StrC(firstInput.substring(1, firstInput.length - 1));
          }
-         else {
+         else if (!isReserved(firstInput)) {
             return new IdC(firstInput);
+         }
+         else {
+            throw new Error("ZHRL: Invalid use of reserved word");
          }
       }
       else if (input.length === 4 && input[0] === 'if') {
          return new IfC(parse(input[1]), parse(input[2]), parse(input[3]));
       }
-      // else if () {
+      else if (input[0] === 'lam' && input.length === 3) {
+         let args = [];
+         for (let i = 0; i < input[1].length; i++) {
+            if (input[1][i] instanceof String && isNaN(Number(input[1][i]))
+             && !hasWhitespace(input[1][i]) && !isReserved(input[1][i])) {
+               args.push(input[1][i]);
+            }
+            else {
+               throw new Error("ZHRL: Invalid argument");
+            }
+         }
 
-      // }
+         return new LamC(args, parse(input[2]));
+      }
       // else if () {
 
       // }
