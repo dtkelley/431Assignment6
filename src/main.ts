@@ -287,4 +287,37 @@ export module Assignment6 {
          throw new Error("ZHRL: Unimplemented expression type");
       }
    }
+
+   export var parse = function(input : any) : ExprC {
+      if (input.length === 1) {
+         let firstInput = input[0]
+         let num = Number(firstInput);
+         if (!isNaN(num)) {
+            return new NumC(num);
+         }
+         else if (firstInput.charAt(0) === '"' && firstInput.charAt(firstInput.length - 1) === '"') {
+            return new StrC(firstInput.substring(1, firstInput.length - 1));
+         }
+         else {
+            return new IdC(firstInput);
+         }
+      }
+      else if (input.length === 4 && input[0] === 'if') {
+         return new IfC(parse(input[1]), parse(input[2]), parse(input[3]));
+      }
+      // else if () {
+
+      // }
+      // else if () {
+
+      // }
+      else if (input.length === 2 && input[1] instanceof Array) {
+         let func = parse(input[0]);
+         let params = [];
+         for (let i = 0; i < input[1].length; i++) {
+            params.push(parse(input[1][i]));
+         }
+         return new AppC(func, params);
+      }
+   }
 }
