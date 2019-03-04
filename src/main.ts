@@ -271,6 +271,10 @@ export module Assignment6 {
             let newBindings = [];
             let newEnv;
 
+            if (exp.params.length !== func.params.length) {
+               throw new Error("ZHRL: Incorrect number of params");
+            }
+
             for (let i = 0; i < exp.params.length; i++) {
                newBindings.push(new Binding(func.params[i], interp(exp.params[i], env)));
             }
@@ -290,6 +294,22 @@ export module Assignment6 {
 
    export var hasWhitespace = function(s) {
       return /\s/g.test(s);
+   }
+
+   export var hasDuplicates = function(arr : string[]) : boolean {
+      for (let i = 0; i < arr.length - 1; i++) {
+         for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] === arr[j]) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   export var validID = function(input : any) : boolean {
+      return input instanceof String && isNaN(Number(input))
+       && !hasWhitespace(input) && !isReserved(input);
    }
 
    export var parse = function(input : any) : ExprC {
@@ -316,8 +336,7 @@ export module Assignment6 {
       else if (input[0] === 'lam' && input.length === 3) {
          let args = [];
          for (let i = 0; i < input[1].length; i++) {
-            if (input[1][i] instanceof String && isNaN(Number(input[1][i]))
-             && !hasWhitespace(input[1][i]) && !isReserved(input[1][i])) {
+            if (validID(input[1][i])) {
                args.push(input[1][i]);
             }
             else {
@@ -325,11 +344,41 @@ export module Assignment6 {
             }
          }
 
+         if (hasDuplicates(args)) {
+            throw new Error("ZHRL: Duplicate arg names");
+         }
+
          return new LamC(args, parse(input[2]));
       }
-      // else if () {
+      else if (input[0] === 'var' && input.length > 2) {
+         let newVars = [];
+         let bodies = [];
+         let lam;
+         for (let i = 1; i < input.length - 1; i++) {
+            if (input[i] instanceof Array && input[i].length === 3
+             && input[i][1] === '=') {
+               let id = input[i][0];
+               let body;
+               if (!validID(id)) {
+                  throw new Error("ZHRL: Invalid id");
+               }
+               body = parse(input[i][2]);
 
-      // }
+               newVars.push(id);
+               bodies.push(body);
+            }
+            else {
+               throw new Error("ZHRL: Invalid variable decleration");
+            }
+         }
+
+         if (hasDuplicates(newVars)) {
+            throw new Error("ZHRL: Duplicate variable name");
+         }
+
+         lam = new LamC(newVars, parse(input[input.length - 1]));
+         return new AppC(lam, bodies);
+      }
       else if (input.length === 2 && input[1] instanceof Array) {
          let func = parse(input[0]);
          let params = [];
