@@ -292,7 +292,7 @@ export module Assignment6 {
       }
    }
 
-   export var hasWhitespace = function(s) {
+   export var hasWhitespace = function(s : any) : boolean{
       return /\s/g.test(s);
    }
 
@@ -308,7 +308,7 @@ export module Assignment6 {
    }
 
    export var validID = function(input : any) : boolean {
-      return input instanceof String && isNaN(Number(input))
+      return (typeof input == 'string') && isNaN(Number(input))
        && !hasWhitespace(input) && !isReserved(input);
    }
 
