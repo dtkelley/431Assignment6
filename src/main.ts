@@ -1,4 +1,4 @@
-export module Assignment6 {
+export module A6 {
    export type ExprC = NumC | IdC | StrC | IfC | LamC | AppC;
 
    export class NumC {

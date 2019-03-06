@@ -1,28 +1,28 @@
 "use strict";
 exports.__esModule = true;
-var Assignment6;
-(function (Assignment6) {
+var A6;
+(function (A6) {
     var NumC = /** @class */ (function () {
         function NumC(num) {
             this.num = num;
         }
         return NumC;
     }());
-    Assignment6.NumC = NumC;
+    A6.NumC = NumC;
     var IdC = /** @class */ (function () {
         function IdC(id) {
             this.id = id;
         }
         return IdC;
     }());
-    Assignment6.IdC = IdC;
+    A6.IdC = IdC;
     var StrC = /** @class */ (function () {
         function StrC(str) {
             this.str = str;
         }
         return StrC;
     }());
-    Assignment6.StrC = StrC;
+    A6.StrC = StrC;
     var IfC = /** @class */ (function () {
         function IfC(test, trueClause, falseClause) {
             this.test = test;
@@ -31,7 +31,7 @@ var Assignment6;
         }
         return IfC;
     }());
-    Assignment6.IfC = IfC;
+    A6.IfC = IfC;
     var LamC = /** @class */ (function () {
         function LamC(args, body) {
             this.args = args;
@@ -39,7 +39,7 @@ var Assignment6;
         }
         return LamC;
     }());
-    Assignment6.LamC = LamC;
+    A6.LamC = LamC;
     var AppC = /** @class */ (function () {
         function AppC(func, params) {
             this.func = func;
@@ -47,28 +47,28 @@ var Assignment6;
         }
         return AppC;
     }());
-    Assignment6.AppC = AppC;
+    A6.AppC = AppC;
     var NumV = /** @class */ (function () {
         function NumV(num) {
             this.num = num;
         }
         return NumV;
     }());
-    Assignment6.NumV = NumV;
+    A6.NumV = NumV;
     var StrV = /** @class */ (function () {
         function StrV(str) {
             this.str = str;
         }
         return StrV;
     }());
-    Assignment6.StrV = StrV;
+    A6.StrV = StrV;
     var BoolV = /** @class */ (function () {
         function BoolV(val) {
             this.val = val;
         }
         return BoolV;
     }());
-    Assignment6.BoolV = BoolV;
+    A6.BoolV = BoolV;
     var CloV = /** @class */ (function () {
         function CloV(params, body, env) {
             this.params = params;
@@ -77,14 +77,14 @@ var Assignment6;
         }
         return CloV;
     }());
-    Assignment6.CloV = CloV;
+    A6.CloV = CloV;
     var PrimV = /** @class */ (function () {
         function PrimV(operator) {
             this.operator = operator;
         }
         return PrimV;
     }());
-    Assignment6.PrimV = PrimV;
+    A6.PrimV = PrimV;
     var Binding = /** @class */ (function () {
         function Binding(id, val) {
             this.id = id;
@@ -92,8 +92,8 @@ var Assignment6;
         }
         return Binding;
     }());
-    Assignment6.Binding = Binding;
-    Assignment6.topEnv = [
+    A6.Binding = Binding;
+    A6.topEnv = [
         new Binding("+", new PrimV("+")),
         new Binding("-", new PrimV("-")),
         new Binding("*", new PrimV("*")),
@@ -103,10 +103,10 @@ var Assignment6;
         new Binding("true", new BoolV(true)),
         new Binding("false", new BoolV(false))
     ];
-    Assignment6.extendEnv = function (env, bindings) {
+    A6.extendEnv = function (env, bindings) {
         return env.concat(bindings, env);
     };
-    Assignment6.envLookup = function (env, id) {
+    A6.envLookup = function (env, id) {
         for (var i = 0; i < env.length; i++) {
             if (env[i].id === id) {
                 return env[i].val;
@@ -114,7 +114,7 @@ var Assignment6;
         }
         throw new Error("ZHRL: Binding not found");
     };
-    Assignment6.serialize = function (val) {
+    A6.serialize = function (val) {
         if (val instanceof NumV) {
             return String(val.num);
         }
@@ -134,25 +134,25 @@ var Assignment6;
             throw new Error('Unrecognized value');
         }
     };
-    Assignment6.myAdd = function (val1, val2) {
+    A6.myAdd = function (val1, val2) {
         if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
             throw new Error("ZHRL: Invalid operands for '+'");
         }
         return new NumV(val1.num + val2.num);
     };
-    Assignment6.mySubtract = function (val1, val2) {
+    A6.mySubtract = function (val1, val2) {
         if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
             throw new Error("ZHRL: Invalid operands for '-'");
         }
         return new NumV(val1.num - val2.num);
     };
-    Assignment6.myMult = function (val1, val2) {
+    A6.myMult = function (val1, val2) {
         if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
             throw new Error("ZHRL: Invalid operands for '*'");
         }
         return new NumV(val1.num * val2.num);
     };
-    Assignment6.myDivide = function (val1, val2) {
+    A6.myDivide = function (val1, val2) {
         if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
             throw new Error("ZHRL: Invalid operands for '/'");
         }
@@ -161,13 +161,13 @@ var Assignment6;
         }
         return new NumV(val1.num / val2.num);
     };
-    Assignment6.myLessEqual = function (val1, val2) {
+    A6.myLessEqual = function (val1, val2) {
         if (!(val1 instanceof NumV) || !(val2 instanceof NumV)) {
             throw new Error("ZHRL: Invalid operands for '<='");
         }
         return new BoolV(val1.num <= val2.num);
     };
-    Assignment6.myEqual = function (val1, val2) {
+    A6.myEqual = function (val1, val2) {
         if (val1 instanceof NumV && val2 instanceof NumV) {
             return new BoolV(val1.num === val2.num);
         }
@@ -179,12 +179,12 @@ var Assignment6;
         }
         return new BoolV(false);
     };
-    Assignment6.isReserved = function (str) {
+    A6.isReserved = function (str) {
         return str === "var" || str === "if" || str === "lam" || str === "=";
     };
-    Assignment6.interp = function (exp, env) {
+    A6.interp = function (exp, env) {
         if (exp instanceof IdC) {
-            return Assignment6.envLookup(env, exp.id);
+            return A6.envLookup(env, exp.id);
         }
         else if (exp instanceof NumC) {
             return new NumV(exp.num);
@@ -193,39 +193,39 @@ var Assignment6;
             return new StrV(exp.str);
         }
         else if (exp instanceof IfC) {
-            var test_1 = Assignment6.interp(exp.test, env);
+            var test_1 = A6.interp(exp.test, env);
             if (!(test_1 instanceof BoolV)) {
                 throw new Error("ZHRL: cannot resolve to boolean");
             }
             if (test_1) {
-                return Assignment6.interp(exp.trueClause, env);
+                return A6.interp(exp.trueClause, env);
             }
             else {
-                return Assignment6.interp(exp.falseClause, env);
+                return A6.interp(exp.falseClause, env);
             }
         }
         else if (exp instanceof LamC) {
             return new CloV(exp.args, exp.body, env);
         }
         else if (exp instanceof AppC) {
-            var func = Assignment6.interp(exp.func, env);
+            var func = A6.interp(exp.func, env);
             if (func instanceof PrimV) {
                 if (exp.params.length === 2) {
-                    var val1 = Assignment6.interp(exp.params[0], env);
-                    var val2 = Assignment6.interp(exp.params[2], env);
+                    var val1 = A6.interp(exp.params[0], env);
+                    var val2 = A6.interp(exp.params[1], env);
                     switch (func.operator) {
                         case '+':
-                            return Assignment6.myAdd(val1, val2);
+                            return A6.myAdd(val1, val2);
                         case '-':
-                            return Assignment6.mySubtract(val1, val2);
+                            return A6.mySubtract(val1, val2);
                         case '*':
-                            return Assignment6.myMult(val1, val2);
+                            return A6.myMult(val1, val2);
                         case '/':
-                            return Assignment6.myDivide(val1, val2);
+                            return A6.myDivide(val1, val2);
                         case '<=':
-                            return Assignment6.myLessEqual(val1, val2);
+                            return A6.myLessEqual(val1, val2);
                         case 'equal?':
-                            return Assignment6.myEqual(val1, val2);
+                            return A6.myEqual(val1, val2);
                         default:
                             throw new Error("ZHRL: Unrecognized primitive operator");
                     }
@@ -237,11 +237,14 @@ var Assignment6;
             else if (func instanceof CloV) {
                 var newBindings = [];
                 var newEnv = void 0;
-                for (var i = 0; i < exp.params.length; i++) {
-                    newBindings.push(new Binding(func.params[i], Assignment6.interp(exp.params[i], env)));
+                if (exp.params.length !== func.params.length) {
+                    throw new Error("ZHRL: Incorrect number of params");
                 }
-                newEnv = Assignment6.extendEnv(func.env, newBindings);
-                Assignment6.interp(func.body, newEnv);
+                for (var i = 0; i < exp.params.length; i++) {
+                    newBindings.push(new Binding(func.params[i], A6.interp(exp.params[i], env)));
+                }
+                newEnv = A6.extendEnv(func.env, newBindings);
+                A6.interp(func.body, newEnv);
             }
             else {
                 throw new Error("ZHRL: Invalid function application");
@@ -251,10 +254,24 @@ var Assignment6;
             throw new Error("ZHRL: Unimplemented expression type");
         }
     };
-    Assignment6.hasWhitespace = function (s) {
+    A6.hasWhitespace = function (s) {
         return /\s/g.test(s);
     };
-    Assignment6.parse = function (input) {
+    A6.hasDuplicates = function (arr) {
+        for (var i = 0; i < arr.length - 1; i++) {
+            for (var j = i + 1; j < arr.length; j++) {
+                if (arr[i] === arr[j]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    A6.validID = function (input) {
+        return (typeof input == 'string') && isNaN(Number(input))
+            && !A6.hasWhitespace(input) && !A6.isReserved(input);
+    };
+    A6.parse = function (input) {
         if (input.length === 1) {
             var firstInput = input[0];
             var num = Number(firstInput);
@@ -265,7 +282,7 @@ var Assignment6;
                 && firstInput.charAt(firstInput.length - 1) === '"') {
                 return new StrC(firstInput.substring(1, firstInput.length - 1));
             }
-            else if (!Assignment6.isReserved(firstInput)) {
+            else if (!A6.isReserved(firstInput)) {
                 return new IdC(firstInput);
             }
             else {
@@ -273,30 +290,56 @@ var Assignment6;
             }
         }
         else if (input.length === 4 && input[0] === 'if') {
-            return new IfC(Assignment6.parse(input[1]), Assignment6.parse(input[2]), Assignment6.parse(input[3]));
+            return new IfC(A6.parse(input[1]), A6.parse(input[2]), A6.parse(input[3]));
         }
         else if (input[0] === 'lam' && input.length === 3) {
             var args = [];
             for (var i = 0; i < input[1].length; i++) {
-                if (input[1][i] instanceof String && isNaN(Number(input[1][i]))
-                    && !Assignment6.hasWhitespace(input[1][i]) && !Assignment6.isReserved(input[1][i])) {
+                if (A6.validID(input[1][i])) {
                     args.push(input[1][i]);
                 }
                 else {
                     throw new Error("ZHRL: Invalid argument");
                 }
             }
-            return new LamC(args, Assignment6.parse(input[2]));
+            if (A6.hasDuplicates(args)) {
+                throw new Error("ZHRL: Duplicate arg names");
+            }
+            return new LamC(args, A6.parse(input[2]));
         }
-        // else if () {
-        // }
+        else if (input[0] === 'var' && input.length > 2) {
+            var newVars = [];
+            var bodies = [];
+            var lam = void 0;
+            for (var i = 1; i < input.length - 1; i++) {
+                if (input[i] instanceof Array && input[i].length === 3
+                    && input[i][1] === '=') {
+                    var id = input[i][0];
+                    var body = void 0;
+                    if (!A6.validID(id)) {
+                        throw new Error("ZHRL: Invalid id");
+                    }
+                    body = A6.parse(input[i][2]);
+                    newVars.push(id);
+                    bodies.push(body);
+                }
+                else {
+                    throw new Error("ZHRL: Invalid variable decleration");
+                }
+            }
+            if (A6.hasDuplicates(newVars)) {
+                throw new Error("ZHRL: Duplicate variable name");
+            }
+            lam = new LamC(newVars, A6.parse(input[input.length - 1]));
+            return new AppC(lam, bodies);
+        }
         else if (input.length === 2 && input[1] instanceof Array) {
-            var func = Assignment6.parse(input[0]);
+            var func = A6.parse(input[0]);
             var params = [];
             for (var i = 0; i < input[1].length; i++) {
-                params.push(Assignment6.parse(input[1][i]));
+                params.push(A6.parse(input[1][i]));
             }
             return new AppC(func, params);
         }
     };
-})(Assignment6 = exports.Assignment6 || (exports.Assignment6 = {}));
+})(A6 = exports.A6 || (exports.A6 = {}));
