@@ -323,7 +323,7 @@ export module A6 {
           && firstInput.charAt(firstInput.length - 1) === '"') {
             return new StrC(firstInput.substring(1, firstInput.length - 1));
          }
-         else if (!isReserved(firstInput)) {
+         else if (!isReserved(firstInput) && firstInput.indexOf(" ") == -1) {
             return new IdC(firstInput);
          }
          else {
@@ -331,10 +331,29 @@ export module A6 {
          }
       }
       else if (input.length === 4 && input[0] === 'if') {
-         return new IfC(parse(input[1]), parse(input[2]), parse(input[3]));
+         let test = input[1]
+         let trueClause = input[2]
+         let falseClause = input[3]
+         if (test instanceof Array) {
+            test = parse(test)
+         } else {
+            test = parse([test])
+         }
+         if (trueClause instanceof Array) {
+            trueClause = parse(trueClause)
+         } else {
+            trueClause = parse([trueClause])
+         }
+         if (falseClause instanceof Array) {
+            falseClause = parse(falseClause)
+         } else {
+            falseClause = parse([falseClause])
+         }
+         return new IfC(test, trueClause, falseClause);
       }
       else if (input[0] === 'lam' && input.length === 3) {
          let args = [];
+         let body = input[2]
          for (let i = 0; i < input[1].length; i++) {
             if (validID(input[1][i])) {
                args.push(input[1][i]);
@@ -348,21 +367,32 @@ export module A6 {
             throw new Error("ZHRL: Duplicate arg names");
          }
 
-         return new LamC(args, parse(input[2]));
+         if (body instanceof Array) {
+            body = parse(body)
+         } else {
+            body = parse([body])
+         }
+
+         return new LamC(args, body);
       }
       else if (input[0] === 'var' && input.length > 2) {
          let newVars = [];
          let bodies = [];
          let lam;
+         let lamBody = input[input.length - 1]
          for (let i = 1; i < input.length - 1; i++) {
             if (input[i] instanceof Array && input[i].length === 3
              && input[i][1] === '=') {
                let id = input[i][0];
-               let body;
+               let body = input[i][2];
                if (!validID(id)) {
                   throw new Error("ZHRL: Invalid id");
                }
-               body = parse(input[i][2]);
+               if (body instanceof Array) {
+                  body = parse(body);
+               } else {
+                  body = parse([body])
+               }
 
                newVars.push(id);
                bodies.push(body);
@@ -376,16 +406,37 @@ export module A6 {
             throw new Error("ZHRL: Duplicate variable name");
          }
 
-         lam = new LamC(newVars, parse(input[input.length - 1]));
+         if (lamBody instanceof Array) {
+            lamBody = parse(lamBody)
+         } else {
+            lamBody = parse([lamBody])
+         }
+
+         lam = new LamC(newVars, lamBody);
          return new AppC(lam, bodies);
       }
       else if (input.length === 2 && input[1] instanceof Array) {
-         let func = parse(input[0]);
+         let func = input[0];
          let params = [];
+         let param;
          for (let i = 0; i < input[1].length; i++) {
-            params.push(parse(input[1][i]));
+            if (input[1][i] instanceof Array) {
+               param = parse(input[1][i])
+            } else {
+               param = parse([input[1][i]])
+            }
+            params.push(param);
+         }
+         if (func instanceof Array) {
+            func = parse(func)
+         } else {
+            func = parse([func])
          }
          return new AppC(func, params);
       }
+   }
+
+   export var topInterp = function(input : any) : string {
+      return serialize(interp(parse(input), topEnv))
    }
 }

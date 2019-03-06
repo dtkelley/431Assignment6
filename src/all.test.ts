@@ -196,19 +196,61 @@ test ('haswhitespace', () => {
 test ('hasDuplicates', () => {
    expect(A6.hasDuplicates(["hello", "this", "this", "is", "a", "dup"]))
    .toEqual(true)
-})
+});
 
 test ('validId', () => {
    expect(A6.validID("valid"))
    .toEqual(true)
-})
+});
 
 test ('INvalidId', () => {
    expect(A6.validID("not valid"))
    .toEqual(false)
-})
+});
 
 test ('INvalidNumId', () => {
    expect(A6.validID("3"))
    .toEqual(false)
+});
+
+test ('parse num->NumC', () => {
+   expect(A6.parse(['1'])).toEqual(new A6.NumC(1))
+});
+
+test ('parse id->IdC', () => {
+   expect(A6.parse(['a1'])).toEqual(new A6.IdC('a1'))
+});
+
+test ('parse reservedID', () => {
+   expect(() => (A6.parse(['if'])))
+   .toThrowError("ZHRL: Invalid use of reserved word")
+});
+
+test ('parse ID with spaces', () => {
+   expect(() => (A6.parse(['this isnt an id'])))
+   .toThrowError("ZHRL: Invalid use of reserved word")
+});
+
+test ('parse str->StrC', () => {
+   expect(A6.parse(['"this is a string"'])).toEqual(new A6.StrC('this is a string'))
+});
+
+test ('parse if', () => {
+   expect(A6.parse(['if', '"test clause"', '"true clause"', '"false clause"']))
+   .toEqual(new A6.IfC(new A6.StrC('test clause'), new A6.StrC('true clause'), new A6.StrC('false clause')))
+});
+
+test ('parse lam', () => {
+   expect(A6.parse(['lam', ['x', 'y', 'z'], '"print x"']))
+   .toEqual(new A6.LamC(['x', 'y', 'z'], new A6.StrC('print x')))
+});
+
+test ('parse app', () => {
+   expect(A6.parse(['func', ['x']]))
+   .toEqual(new A6.AppC(new A6.IdC('func'), [new A6.IdC('x')]))
+});
+
+test ('parse var', () => {
+   expect(A6.parse(['var', ['z','=','14'], ['+', ['z', 'z']]]))
+   .toEqual(new A6.AppC(new A6.LamC(['z'], new A6.AppC(new A6.IdC('+'), [new A6.IdC('z'), new A6.IdC('z')])), [new A6.NumC(14)]))
 })
